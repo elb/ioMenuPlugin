@@ -3,9 +3,9 @@
 /**
  * This is your base menu item. It roughly represents a single <li> tag
  * and is what you should interact with most of the time by default.
- * 
+ *
  * Originally taken from sympal (http://www.sympalphp.org)
- * 
+ *
  * @package     ioMenuPlugin
  * @subpackage  menu
  * @author      Jonathan H. Wage <jonwage@gmail.com>
@@ -60,7 +60,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
 
   /**
    * Class constructor
-   * 
+   *
    * @param string $name    The name of this menu, which is how its parent will
    *                        reference it. Also used as label if label not specified
    * @param string $route   The route/url for this menu to use. If not specified,
@@ -78,7 +78,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
 
   /**
    * Generates the url to this menu item based on the route
-   * 
+   *
    * @param array $options Options to pass to the url_for method
    */
   public function getUri(array $options = array())
@@ -240,7 +240,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
 
   /**
    * @param  string $label    The text to use when rendering this menu item
-   * @param  string $culture  The i18n culture to set this label for 
+   * @param  string $culture  The i18n culture to set this label for
    * @return ioMenuItem
    */
   public function setLabel($label, $culture = null)
@@ -289,7 +289,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
     {
       return $this->getParent()->getCulture();
     }
-    
+
     // if we're the root, get from the context or return the default
     if (sfContext::hasInstance())
     {
@@ -321,7 +321,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
   }
 
   /**
-   * @param  array $attributes 
+   * @param  array $attributes
    * @return ioMenuItem
    */
   public function setAttributes($attributes)
@@ -334,7 +334,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
   /**
    * @param  string $name     The name of the attribute to return
    * @param  mixed  $default  The value to return if the attribute doesn't exist
-   * 
+   *
    * @return mixed
    */
   public function getAttribute($name, $default = null)
@@ -632,7 +632,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
   public function slice($offset, $length = 0)
   {
     $count = $this->count();
-    
+
     $names = array_keys($this->getChildren());
     if (is_numeric($offset))
     {
@@ -708,7 +708,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
 
   /**
    * Split menu into two distinct menus.
-   * 
+   *
    * @param mixed $length Name of child, child object, or numeric length.
    * @return array Array with two menus, with "primary" and "secondary" key
    */
@@ -907,7 +907,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
   {
     $this->_linkOptions = $linkOptions;
   }
-  
+
 
   /**
    * Returns the index that this child is within its parent.
@@ -937,7 +937,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
    * Reset children nums.
    *
    * Primarily called after changes to children (removing, reordering, etc)
-   * 
+   *
    * @return void
    */
   protected function _resetChildrenNum()
@@ -951,11 +951,11 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
 
   /**
    * Creates a new ioMenuItem to be the child of this menu
-   * 
+   *
    * @param string  $name
    * @param string  $route
    * @param array   $attributes
-   * 
+   *
    * @return ioMenuItem
    */
   protected function _createChild($name, $route = null, $attributes = array(), $class = null)
@@ -970,13 +970,13 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
 
   /**
    * Removes a child from this menu item
-   * 
+   *
    * @param mixed $name The name of ioMenuItem instance to remove
    */
   public function removeChild($name)
   {
     $name = ($name instanceof ioMenuItem) ? $name->getName() : $name;
-    
+
     if (isset($this->_children[$name]))
     {
       // unset the child and reset it so it looks independent
@@ -1033,9 +1033,9 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
    *   * 1 - directly children only
    *   * 2 - children and grandchildren
    *
-   * @param integer $depth         The depth of children to render 
+   * @param integer $depth         The depth of children to render
    * @param boolean $renderAsChild Used internally to render with attributes on the write element
-   * 
+   *
    * @return string
    */
   public function render($depth = null, $renderAsChild = false)
@@ -1095,7 +1095,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
    * @return string
    */
   public function renderChildren($depth = null)
-  {  
+  {
     $html = '';
     foreach ($this->_children as $child)
     {
@@ -1118,7 +1118,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
     // if we don't have access or this item is marked to not be shown
     if (!$this->shouldBeRendered())
     {
-      return; 
+      return;
     }
 
     // explode the class string into an array of classes
@@ -1170,7 +1170,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
    * makes up its part in a fully-rendered and spaced menu.
    *
    * @param  string $html The html to render in an (un)formatted way
-   * @param  string $type The type [ul,link,li] of thing being rendered 
+   * @param  string $type The type [ul,link,li] of thing being rendered
    * @return string
    */
   protected function _format($html, $type)
@@ -1331,6 +1331,46 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
   }
 
   /**
+   * Returns an ioMenuItem breadcrumbs menu
+   *
+   * It can seems a bit redundant as the getBreadcrumbsArray() method gives more flexibility
+   * The following method is a convenience for having a quick rendered breadcrumb,
+   * following the current css ioMenuItem rules (eg. .last, .first, .current) and html layout.
+   *
+   * @param   bool   $withRoot Wether to add or not the root item at the beginning
+   * @return  ioMenuItem
+   */
+  public function getBreadcrumbsMenu ($withRoot = true)
+  {
+    $obj     = $this->getCurrent();
+    $parents = array();
+    do
+    {
+      $parents[] = $obj;
+    }
+    while ($obj = $obj->getParent());
+
+    $parents = array_reverse($parents);
+    if ($withRoot)
+    {
+      // dummy item
+      $menu = new ioMenuItem('root');
+    }
+    else
+    {
+      $root = array_shift($parents);
+      $menu = $this->createFromArray($root->toArray(false));
+    }
+
+    foreach ($parents as $item)
+    {
+      $menu->addChild($menu->createFromArray($item->toArray(false)));
+    }
+
+    return $menu;
+  }
+
+  /**
    * Returns the current menu item if it is a child of this menu item
    *
    * @return bool|ioMenuItem
@@ -1427,7 +1467,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
   }
 
   /**
-   * @return bool Whether or not this menu item is first in its parent 
+   * @return bool Whether or not this menu item is first in its parent
    */
   public function isFirst()
   {
@@ -1445,13 +1485,13 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
    * menu item, this function takes into consideration user credentials.
    *
    * This returns true if this is the first child that would be rendered
-   * for the current user 
+   * for the current user
    *
    * @return boolean
    */
   public function actsLikeFirst()
   {
-    // root items are never "marked" as first 
+    // root items are never "marked" as first
     if ($this->isRoot())
     {
       return false;
@@ -1533,7 +1573,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
          * This should look strange. But, if we ask our parent for the
          * current uri, and it returns it successfully, then one of two
          * different things just happened:
-         * 
+         *
          *   1) The parent already had the currentUri calculated, but it
          *      hadn't been passed down to the child yet. This technically
          *      should not happen, but we allow for the possibility. In
@@ -1685,7 +1725,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
     {
       $this->requiresAuth($array['requires_auth']);
     }
-    
+
     if (isset($array['requires_no_auth']))
     {
       $this->requiresNoAuth($array['requires_no_auth']);
@@ -1724,7 +1764,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
    *
    * The source is an array of data that should match the output from ->toArray().
    *
-   * @param  array $data The array of data to use as a source for the menu tree 
+   * @param  array $data The array of data to use as a source for the menu tree
    * @return ioMenuItem
    */
   public static function createFromArray(array $data)
@@ -1801,7 +1841,7 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
 
   /**
    * Throws an io.menu.method_not_found event.
-   * 
+   *
    * This allows anyone to hook into the event and effectively add methods
    * to this class
    */
