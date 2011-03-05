@@ -1343,12 +1343,14 @@ class ioMenuItem implements ArrayAccess, Countable, IteratorAggregate
   public function getBreadcrumbsMenu ($withRoot = true)
   {
     $obj     = $this->getCurrent();
-    $parents = array();
-    do
+    if ($obj)
     {
-      $parents[] = $obj;
+      do
+      {
+        $parents[] = $obj;
+      }
+      while ($obj = $obj->getParent());
     }
-    while ($obj = $obj->getParent());
 
     $parents = array_reverse($parents);
     if ($withRoot)
